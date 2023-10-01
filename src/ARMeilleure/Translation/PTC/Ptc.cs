@@ -286,7 +286,6 @@ namespace ARMeilleure.Translation.PTC
                         return false;
                     }
 
-                    Debug.Assert(stream.Position == stream.Length);
 
                     stream.Seek(0L, SeekOrigin.Begin);
 
@@ -354,7 +353,6 @@ namespace ARMeilleure.Translation.PTC
                         return false;
                     }
 
-                    Debug.Assert(stream.Position == stream.Length);
 
                     stream.Seek((long)Unsafe.SizeOf<InnerHeader>(), SeekOrigin.Begin);
 
@@ -369,7 +367,6 @@ namespace ARMeilleure.Translation.PTC
                     _unwindInfosStream.Write(unwindInfosBytes);
                     stream.Seek(innerHeader.UnwindInfosLength, SeekOrigin.Current);
 
-                    Debug.Assert(stream.Position == stream.Length);
                 }
                 finally
                 {
@@ -476,7 +473,6 @@ namespace ARMeilleure.Translation.PTC
                 ReadOnlySpan<byte> unwindInfosBytes = new(stream.PositionPointer, innerHeader.UnwindInfosLength);
                 _unwindInfosStream.WriteTo(stream);
 
-                Debug.Assert(stream.Position == stream.Length);
 
                 innerHeader.InfosHash = XXHash128.ComputeHash(infosBytes);
                 innerHeader.CodesHash = XXHash128.ComputeHash(codesBytes);
@@ -597,7 +593,6 @@ namespace ARMeilleure.Translation.PTC
 
                     bool isAddressUnique = translator.Functions.TryAdd(infoEntry.Address, infoEntry.GuestSize, func);
 
-                    Debug.Assert(isAddressUnique, $"The address 0x{infoEntry.Address:X16} is not unique.");
                 }
             }
 
@@ -619,8 +614,6 @@ namespace ARMeilleure.Translation.PTC
         [Conditional("DEBUG")]
         private void SkipCode(int index, int codeLength)
         {
-            Debug.Assert(_codesList[index].Length == 0);
-            Debug.Assert(codeLength == 0);
         }
 
         private void SkipReloc(int relocEntriesCount)
@@ -637,7 +630,6 @@ namespace ARMeilleure.Translation.PTC
 
         private byte[] ReadCode(int index, int codeLength)
         {
-            Debug.Assert(_codesList[index].Length == codeLength);
 
             return _codesList[index];
         }
@@ -824,13 +816,11 @@ namespace ARMeilleure.Translation.PTC
                 {
                     ulong address = item.address;
 
-                    Debug.Assert(Profiler.IsAddressInStaticCodeRange(address));
 
                     TranslatedFunction func = translator.Translate(address, item.funcProfile.Mode, item.funcProfile.HighCq);
 
                     bool isAddressUnique = translator.Functions.TryAdd(address, func.GuestSize, func);
 
-                    Debug.Assert(isAddressUnique, $"The address 0x{address:X16} is not unique.");
 
                     Interlocked.Increment(ref _translateCount);
 

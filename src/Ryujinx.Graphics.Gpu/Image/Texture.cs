@@ -9,7 +9,9 @@ using Ryujinx.Memory.Range;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 
 namespace Ryujinx.Graphics.Gpu.Image
@@ -773,7 +775,11 @@ namespace Ryujinx.Graphics.Gpu.Image
                     _sizeInfo,
                     data);
             }
-
+            
+             var test = Random.Shared.NextInt64();
+             var unCompressed = true;
+             //File.WriteAllBytes($@"C:\\Users\\dimit\\Documents\\Projects\\Open-Source\\Ryujinx\\Test\\IMG-{Format.ToString()}-{test}-RAW-{width}-{height}-{sliceDepth}-{levels}-{layers}-{Info.FormatInfo.BlockWidth}-{Info.FormatInfo.BlockHeight}-{unCompressed}.tt", result.ToArray());
+            
             // Handle compressed cases not supported by the host:
             // - ASTC is usually not supported on desktop cards.
             // - BC4/BC5 is not supported on 3D textures.
@@ -803,7 +809,7 @@ namespace Ryujinx.Graphics.Gpu.Image
                 result = decoded;
             }
             else if (!_context.Capabilities.SupportsEtc2Compression && Format.IsEtc2())
-            {
+            { 
                 switch (Format)
                 {
                     case Format.Etc2RgbaSrgb:
@@ -891,7 +897,13 @@ namespace Ryujinx.Graphics.Gpu.Image
                         break;
                 }
             }
+            else
+            {
+                unCompressed = false;
+            }
 
+            // File.WriteAllBytes($@"C:\\Users\\dimit\\Documents\\Projects\\Open-Source\\Ryujinx\\Test\\IMG-{Format.ToString()}-{test}-COM-{width}-{height}-{sliceDepth}-{levels}-{layers}-{Info.FormatInfo.BlockWidth}-{Info.FormatInfo.BlockHeight}-{unCompressed}.tt", result.ToArray());
+            
             return result;
         }
 
