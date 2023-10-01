@@ -51,6 +51,12 @@ namespace Ryujinx.HLE.HOS.Services.Account.Acc.AccountService
             return _managerServer.GetNintendoAccountUserResourceCacheForApplication(context);
         }
 
+        [CommandCmif(150)]
+        public ResultCode CreateAuthorizationRequest(ServiceCtx context)
+        {
+            return ResultCode.Success;
+        }
+
         [CommandCmif(160)] // 5.0.0+
         // StoreOpenContext()
         public ResultCode StoreOpenContext(ServiceCtx context)
